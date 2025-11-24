@@ -1,0 +1,117 @@
+<section class="helper-page">
+  <div class="helper-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Gemini Code DJ · live</p>
+      <h2>Make your code louder, cleaner, faster</h2>
+      <p class="lede">
+        Paste a snippet, add a vibe, and let Gemini remix it with modern patterns, security checks, and
+        readable naming.
+      </p>
+      <div class="chip-row">
+        <button
+          *ngFor="let preset of presets"
+          type="button"
+          class="chip"
+          (click)="applyPreset(preset)"
+          [disabled]="loading"
+        >
+          <span nz-icon nzType="sparkles"></span>
+          {{ preset }}
+        </button>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <button nz-button nzType="default" nzShape="round" (click)="reset()" [disabled]="loading">
+        <span nz-icon nzType="reload"></span>
+        Reset
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        nzShape="round"
+        class="cta-btn"
+        (click)="getSuggestions()"
+        [nzLoading]="loading"
+        [disabled]="!code"
+      >
+        <span nz-icon nzType="thunderbolt"></span>
+        Ship my upgrade
+      </button>
+    </div>
+  </div>
+
+  <div nz-row [nzGutter]="[20, 20]" class="helper-grid">
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" class="grid-col">
+      <nz-card class="glass-card editor-card" [nzTitle]="editorTitle">
+        <ng-template #editorTitle>
+          <div class="card-title">
+            <span class="dot red"></span>
+            <span class="dot amber"></span>
+            <span class="dot green"></span>
+            <span class="title-text">Your snippet</span>
+          </div>
+        </ng-template>
+
+        <div class="editor-shell">
+          <textarea
+            nz-input
+            class="code-editor"
+            [(ngModel)]="code"
+            placeholder="// Paste code you want remixed"
+            spellcheck="false"
+          ></textarea>
+        </div>
+        <div class="context-row">
+          <label>Context / vibe</label>
+          <input
+            nz-input
+            [(ngModel)]="context"
+            placeholder="Example: 'Prefer composables and explain the steps in bullets'"
+          />
+        </div>
+        <div class="footer-note">
+          <span nz-icon nzType="bulb"></span>
+          Tip: add framework versions, performance goals, or tone to steer the response.
+        </div>
+      </nz-card>
+    </div>
+
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" class="grid-col">
+      <nz-card class="glass-card result-card" nzTitle="Gemini remix">
+        <div *ngIf="loading" class="loading-state">
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-block"></div>
+        </div>
+
+        <div *ngIf="!loading && result" class="result-shell">
+          <div class="result-meta">
+            <span class="pill">Refined • {{ result.createdAt | date : 'shortTime' }}</span>
+          </div>
+          <div class="result-section">
+            <div class="section-head">
+              <span nz-icon nzType="code"></span>
+              <h3>Upgraded snippet</h3>
+            </div>
+            <pre class="code-output">{{ result.suggestions }}</pre>
+          </div>
+
+          <div class="result-section">
+            <div class="section-head">
+              <span nz-icon nzType="experiment"></span>
+              <h3>Why it slaps</h3>
+            </div>
+            <div [innerHTML]="result.explanation" class="explanation"></div>
+          </div>
+        </div>
+
+        <div *ngIf="!loading && !result" class="placeholder">
+          <div class="badge">
+            <span nz-icon nzType="rise"></span>
+          </div>
+          <p>Paste code on the left and Gemini will refactor, harden, and explain the glow-up.</p>
+        </div>
+      </nz-card>
+    </div>
+  </div>
+</section>

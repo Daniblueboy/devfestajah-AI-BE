@@ -1,0 +1,61 @@
+<nz-layout class="app-layout">
+  <div class="glow glow-one"></div>
+  <div class="glow glow-two"></div>
+
+  <nz-layout>
+    <nz-header>
+      <div class="header-content">
+        <div class="header-left">
+          <button nz-button nzType="text" class="mobile-trigger" (click)="toggleMenu()">
+            <span nz-icon [nzType]="menuOpen ? 'close' : 'menu'"></span>
+          </button>
+
+          <div class="brand" (click)="closeMenu()">
+            <div class="brand-icon">
+              <img src="https://angular.io/assets/images/logos/angular/angular.svg" alt="logo" />
+            </div>
+            <div class="brand-text">
+              <strong>DevFest Ajah</strong>
+              <span>Gen Z edition</span>
+            </div>
+          </div>
+
+          <nav class="nav-links">
+            <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+            <a routerLink="/chat" routerLinkActive="active">AI Chat</a>
+            <a routerLink="/code-helper" routerLinkActive="active">Code Helper</a>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <span class="status-pill">
+            <span class="dot"></span>
+            Live
+          </span>
+          <nz-avatar
+            nzIcon="user"
+            nzSrc="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+          ></nz-avatar>
+        </div>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="content-shell">
+        <div class="page-heading">
+          <p class="eyebrow">Gemini studio</p>
+          <h1>Angular + AI Playground</h1>
+        </div>
+        <div class="inner-content animate-fade-in-up">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
+
+<div class="mobile-menu" *ngIf="menuOpen">
+  <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+  <a routerLink="/chat" routerLinkActive="active" (click)="closeMenu()">AI Chat</a>
+  <a routerLink="/code-helper" routerLinkActive="active" (click)="closeMenu()">Code Helper</a>
+</div>
+<div class="menu-backdrop" *ngIf="menuOpen" (click)="closeMenu()"></div>

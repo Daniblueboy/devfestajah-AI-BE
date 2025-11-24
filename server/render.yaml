@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: devfest-ai-api
+    env: node
+    rootDir: .
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3-pro
+      - key: NODE_ENV
+        value: production
