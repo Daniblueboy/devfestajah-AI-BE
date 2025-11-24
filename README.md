@@ -1,128 +1,189 @@
-# DevFest Ajah AI Assistant
+# DevFest Ajah AI Backend
 
-A secure, scalable full-stack web app built for the "Angular Meets AI" DevFest talk.
+Backend API service for the DevFest Ajah AI application, powered by Google Gemini AI.
 
-## Overview
+## 🚀 Quick Start
 
-- **Frontend**: Angular 21 + Ng Zorro
-- **Backend**: Node.js + Express + TypeScript  
-- **AI**: Google Gemini 3 Pro (via backend)
-
-## Prerequisites
-
-- Node.js 20.x (LTS)
-- npm
-
-## Project Structure
-
-```
-devfestAjah/
-├── client/          # Angular 21 frontend
-└── server/          # Node.js/Express backend
-```
-
-## Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Daniblueboy/devfestajah-AI.git
-   cd devfestajah-AI
-   ```
-
-2. **Install dependencies**
-   ```bash
-   # Backend
-   cd server
-   npm install
-   
-   # Frontend
-   cd ../client
-   npm install
-   ```
-
-3. **Environment Variables**
-   
-   Create `server/.env`:
-   ```env
-   PORT=3000
-   GEMINI_API_KEY=your_api_key_here
-   GEMINI_MODEL=gemini-3-pro
-   GEMINI_API_BASE_URL=https://generativelanguage.googleapis.com
-   ```
-   
-   Get your API key from: https://makersuite.google.com/app/apikey
-
-## Running Locally
-
-### Backend
-```bash
-cd server
-npm run dev      # Development with hot reload
-# or
-npm run build && npm start  # Production
-```
-
-Server runs on: http://localhost:3000
-
-### Frontend
-```bash
-cd client
-npm start
-```
-
-Frontend runs on: http://localhost:4200
-
-## Features
-
-- **Dashboard**: Overview and quick stats
-- **AI Chat**: Conversational AI powered by Gemini 3 Pro
-- **Code Helper**: Get AI suggestions and improvements for code snippets
-
-## Deployment
-
-### Frontend (Netlify)
-- Already configured with `netlify.toml`
-- See `client/README.md` for details
-
-### Backend (Render)
-- Configured with `render.yaml`
-- See `server/DEPLOYMENT.md` for step-by-step guide
-- **Important**: Set `GEMINI_API_KEY` in Render environment variables
-
-## Tech Stack
-
-### Frontend
-- Angular 21
-- Ng Zorro (Ant Design)
-- RxJS
-- TypeScript 5.9
-
-### Backend
+### Prerequisites
 - Node.js 20.x
-- Express 5
-- Google Generative AI (Gemini 3 Pro)
-- TypeScript 5.9
-- Zod (validation)
-- Helmet (security)
+- npm
+- Google Gemini API Key ([Get one here](https://makersuite.google.com/app/apikey))
 
-## API Endpoints
+### Local Development
 
-- `POST /api/chat` - Chat with AI
-- `POST /api/code-helper` - Get code suggestions
-- `GET /health` - Health check
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Contributing
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` and add your Gemini API key:
+   ```env
+   GEMINI_API_KEY=your-actual-api-key-here
+   ```
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
+3. **Run development server**
+   ```bash
+   npm run dev
+   ```
 
-## License
+4. **Build for production**
+   ```bash
+   npm run build
+   npm start
+   ```
+
+## 📦 Deployment on Render
+
+### Step-by-Step Guide
+
+1. **Push your code to GitHub** (if not already done)
+
+2. **Go to [Render Dashboard](https://dashboard.render.com)**
+
+3. **Create New Web Service**
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository
+   - Select the `server` folder as root directory
+
+4. **Configure the service**
+   - **Name**: `devfestajah-ai-be` (or your preferred name)
+   - **Environment**: `Node`
+   - **Region**: Choose closest to your users
+   - **Branch**: `main`
+   - **Root Directory**: Leave empty (or specify if server is in subdirectory)
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm start`
+
+5. **Set Environment Variables** (CRITICAL!)
+   Click "Environment" tab and add:
+   ```
+   GEMINI_API_KEY = your-actual-gemini-api-key-here
+   GEMINI_MODEL = gemini-1.5-flash
+   NODE_ENV = production
+   ```
+
+6. **Deploy**
+   - Click "Create Web Service"
+   - Wait for deployment to complete
+   - Your API will be available at: `https://your-service-name.onrender.com`
+
+### Verifying Deployment
+
+Test your deployed API:
+
+```bash
+# Health check
+curl https://your-service-name.onrender.com/health
+
+# Test chat endpoint
+curl -X POST https://your-service-name.onrender.com/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello!"}'
+```
+
+### Common Issues
+
+#### "Failed to generate chat reply"
+- **Cause**: `GEMINI_API_KEY` not set in Render environment variables
+- **Fix**: Go to Render Dashboard → Your Service → Environment → Add `GEMINI_API_KEY`
+
+#### Service keeps sleeping (Free tier)
+- Render free tier spins down after 15 minutes of inactivity
+- First request after sleep takes ~30-60 seconds
+- Consider using a paid plan or keep-alive service
+
+#### Build fails
+- Check build logs in Render dashboard
+- Ensure Node.js version matches (20.x)
+- Verify all dependencies are in `package.json`
+
+## 🔧 API Endpoints
+
+### Chat
+```http
+POST /api/chat
+Content-Type: application/json
+
+{
+  "message": "Your message here"
+}
+```
+
+### Code Helper
+```http
+POST /api/code-helper
+Content-Type: application/json
+
+{
+  "code": "Your code here",
+  "context": "Optional context"
+}
+```
+
+### Health Check
+```http
+GET /health
+```
+
+## 🛠️ Tech Stack
+
+- **Runtime**: Node.js 20.x
+- **Framework**: Express.js 5.x
+- **AI**: Google Gemini 1.5
+- **Language**: TypeScript
+- **Validation**: Zod
+- **Security**: Helmet, CORS, Rate Limiting
+
+## 📝 Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `PORT` | No | 3000 | Server port |
+| `GEMINI_API_KEY` | **Yes** | - | Google Gemini API key |
+| `GEMINI_MODEL` | No | gemini-3-pro | Model version |
+| `NODE_ENV` | No | development | Environment mode |
+
+## 🔐 Getting a Gemini API Key
+
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click "Create API Key"
+4. Copy the key and add it to your environment variables
+
+**⚠️ CRITICAL SECURITY WARNINGS:**
+- ❌ **NEVER** share your API key publicly (chat, forums, screenshots)
+- ❌ **NEVER** commit API keys to git repositories
+- ❌ **NEVER** hardcode keys in source code
+- ✅ **ALWAYS** use environment variables
+- ✅ **ALWAYS** keep `.env` in `.gitignore`
+- 🔒 Consider setting up API key restrictions in Google Cloud Console
+
+## 📊 Monitoring
+
+Check your Render service logs:
+```bash
+# Via Render Dashboard
+Dashboard → Your Service → Logs
+
+# Look for these startup messages:
+# ✅ GEMINI_API_KEY is configured
+# Using model: gemini-1.5-flash
+# Server is running on port 3000
+```
+
+## 🤝 Contributing
+
+1. Make your changes
+2. Test locally with `npm run dev`
+3. Build with `npm run build`
+4. Push to GitHub
+5. Render will auto-deploy (if enabled)
+
+## 📄 License
 
 ISC
-
-## Author
-
-Built for DevFest Ajah 2025 - "Angular Meets AI" Talk
