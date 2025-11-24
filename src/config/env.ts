@@ -8,7 +8,7 @@ export const config = {
   port: process.env.PORT || 3000,
   gemini: {
     apiKey: process.env.GEMINI_API_KEY,
-    model: process.env.GEMINI_MODEL || 'gemini-3-pro',
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-pro',
     baseUrl:
       process.env.GEMINI_API_BASE_URL ||
       'https://generativelanguage.googleapis.com',
